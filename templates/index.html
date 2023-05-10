@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTP Validator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/speakeasy/2.0.0/speakeasy.min.js" integrity="sha512-EQ2G/YYc32sNjZ43EiZ+yqY3j1lN8Iy47nb1bxdKj4ujwP4A93QZ6dSkv6z1jSfJm6G2HpgJyvDD7aFbFeBNuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: white;
+        color: black;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-bottom: 30px;
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    img {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 30px;
+        border: 5px solid black;
+        border-radius: 10px;
+    }
+
+    form {
+        display: inline-block;
+        text-align: left;
+        border: 2px solid black;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    input {
+        font-size: 16px;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid black;
+        box-sizing: border-box;
+        border-radius: 5px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 10px 20px;
+        background-color: black;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background-color: #333;
+    }
+</style>
+
+</head>
+<body>
+    <h1>TOTP Validator</h1>
+    <img src="{{ url_for('send_img', path=qr_code_file) }}" alt="QR Code">
+    <form id="totpForm">
+        <label for="totpToken">Enter TOTP token:</label>
+        <input type="text" id="totpToken" name="totpToken" required>
+        <button type="submit">Check</button>
+    </form>
+
+    <script>
+        const totpSecret = "{{ secret_key }}";
+
+        $("#totpForm").submit(function(event) {
+            event.preventDefault();
+
+            const enteredToken = $("#totpToken").val();
+
+            $.post("/verify", { totpToken: enteredToken }, function(data) {
+                alert(data.result);
+            });
+        });
+    </script>
+</body>
+</html>
